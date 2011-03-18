@@ -55,6 +55,7 @@ class Instagram {
         'locations' => 'https://api.instagram.com/v1/locations/%d?access_token=%s',
         'locations_recent' => 'https://api.instagram.com/v1/locations/%d/media/recent/?max_id=%d&min_id=%d&max_timestamp=%d&min_timestamp=%d&access_token=%s',
         'locations_search' => 'https://api.instagram.com/v1/locations/search?lat=%s&lng=%s&foursquare_id=%d&distance=%d&access_token=%s',
+		'subscriptions' => 'https://api.instagram.com/v1/subscriptions',
     );
 
     /**
@@ -444,6 +445,28 @@ class Instagram {
         $this->_initHttpClient($endpointUrl);
         return $this->_getHttpClientResponse();
     }
+
+    /**
+     * Create a subscription.
+	 * @see: http://instagr.am/developer/realtime/
+     * @param $object
+     * @param $aspect
+     * @param $verify_token
+     */
+    public function startSubscription($object='user', $aspect='media', $verify_token='') {
+	        $this->_init();
+            $this->_initHttpClient($this->_endpointUrls['subscriptions'], Zend_Http_Client::POST);
+            $this->_setHttpClientPostParam('client_id', $this->_config['client_id']);
+            $this->_setHttpClientPostParam('client_secret', $this->_config['client_secret']);
+            $this->_setHttpClientPostParam('object', $object);
+            $this->_setHttpClientPostParam('aspect', $aspect);
+            $this->_setHttpClientPostParam('verify_token', $verify_token);
+            $this->_setHttpClientPostParam('callback_url', $this->_config['redirect_uri']);
+
+            $data = $this->_getHttpClientResponse();
+    }
+
+
 }
 
 class InstagramException extends Exception {
